@@ -1,0 +1,76 @@
+#include <iostream>
+using namespace std;
+
+struct person {
+	string c; 
+	float s;
+	int d; 
+	short int m; 
+};
+int order(char a, char b, char c) {
+	if (a == 's' && b == 'd' && c == 'm') return 1;
+	if (a == 's' && b == 'm' && c == 'd') return 2;
+	if (a == 'd' && b == 's' && c == 'm') return 3;
+	if (a == 'd' && b == 'm' && c == 's') return 4;
+	if (a == 'm' && b == 'd' && c == 's') return 5;
+	if (a == 'm' && b == 's' && c == 'd') return 6;
+}
+bool compare(int ord, person key, person comp) {
+	switch (ord) {
+	case 1:
+		return key.s < comp.s ? false : (key.s > comp.s || (key.s == comp.s && key.d > comp.d) || (key.s == comp.s && key.d == comp.d && key.m > comp.m));
+	case 2:
+		return key.s < comp.s ? false : (key.s > comp.s || (key.s == comp.s && key.m > comp.m) || (key.s == comp.s && key.m == comp.m && key.d > comp.d));
+	case 3:
+		return key.d < comp.d ? false : (key.d > comp.d || (key.d == comp.d && key.s > comp.s) || (key.d == comp.d && key.s == comp.s && key.m > comp.m));
+	case 4:
+		return key.d < comp.d ? false : (key.d > comp.d || (key.d == comp.d && key.m > comp.m) || (key.d == comp.d && key.m == comp.m && key.s > comp.s));
+	case 5:
+		return key.m < comp.m ? false : (key.m > comp.m || (key.m == comp.m && key.d > comp.d) || (key.s == comp.s && key.d == comp.d && key.m > comp.m));
+	case 6:
+		return key.m < comp.m ? false : (key.m > comp.m || (key.m == comp.m && key.s > comp.s) || (key.m == comp.m && key.s == comp.s && key.d > comp.d));
+	default:
+		return false;
+	}
+}
+void sort(person people[], int n, char a, char b, char c, int ord) {
+	int j;
+	person key;
+	for (int i = 1; i < n; i++) {
+		key.c = people[i].c;
+		key.s = people[i].s;
+		key.d = people[i].d;
+		key.m = people[i].m;
+		j = i - 1;
+		while (j >= 0 && compare(ord, key, people[j])) {
+			people[j + 1] = people[j];
+			j = j - 1;
+		}
+		people[j + 1] = key;
+	}
+	return;
+}
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+	int n;
+	char a, b, c;
+	cin >> n;
+	cin >> a >> b >> c;
+	int ord = order(a, b, c);
+	person* girls = new person[n];
+	person* boys = new person[n];
+	for (int i = 0; i < n; i++) {
+		cin >> girls[i].c >> girls[i].s >> girls[i].d >> girls[i].m;
+		cin >> boys[i].c >> boys[i].s >> boys[i].d >> boys[i].m;
+	}
+	sort(girls, n, a, b, c, ord);
+	sort(boys, n, a, b, c, ord);
+	for (int i = 0; i < n; i++) {
+		cout << girls[i].c << " " << boys[i].c << " ";
+	}
+	delete[] girls;
+	delete[] boys;
+}
